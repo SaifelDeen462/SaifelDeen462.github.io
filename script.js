@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     terminalBody.innerHTML = ''; 
 
     // The typing animation function
-    const welcomeText = "Booting sequence initiated... \nConnecting to Arch Linux subsystem... \nWelcome to Seif's interactive portfolio. \nType 'help' to see available commands.";
+    const welcomeText = "Booting sequence initiated... \nConnecting to Arch Linux subsystem... \nWelcome. \nType 'help' to see available commands.";
     let i = 0;
     
     function typeWriter() {
