@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     terminalBody.innerHTML = ''; 
 
     // The typing animation function
-    const welcomeText = "Booting sequence initiated... \nWelcome to Seif's interactive portfolio. \nType 'help' to see available commands.";
+    const welcomeText = "Booting sequence initiated... \nWelcome. \nType 'help' to see available commands.";
     let i = 0;
     
     function typeWriter() {
