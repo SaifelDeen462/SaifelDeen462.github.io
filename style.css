@@ -136,3 +136,45 @@ ul li {
 strong {
     color: var(--text-color);
 }
+/* --- NEW ANIMATIONS & EFFECTS --- */
+
+/* 1. CRT Scanline Overlay */
+body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none; /* Lets you click through the overlay */
+}
+
+/* 2. Neon Hacker Glow */
+.prompt, .highlight {
+    text-shadow: 0 0 8px var(--accent-color);
+}
+
+.title {
+    text-shadow: 0 0 5px #8b949e;
+}
+
+/* 3. Smooth Fade-In for Static Content */
+.static-content {
+    animation: fadeInUp 1.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
