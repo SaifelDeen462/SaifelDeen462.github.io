@@ -45,13 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Command responses
     const commands = {
-        'help': 'Available commands: <br> - <span class="highlight">whoami</span>: Display user info <br> - <span class="highlight">stats</span>: Show machine solve counts <br> - <span class="highlight">projects</span>: List current projects <br> - <span class="highlight">writeups</span>: Access technical logs and blogs <br> - <span class="highlight">clear</span>: Clear terminal output',
+        'help': 'Available commands: <br> - <span class="highlight">whoami</span>: Display user info <br> - <span class="highlight">stats</span>: Show machine solve counts <br> - <span class="highlight">projects</span>: List current projects <br> - <span class="highlight">certs</span>: Display active certifications <br> - <span class="highlight">writeups</span>: Access technical logs and blogs <br> - <span class="highlight">clear</span>: Clear terminal output',
         
         'whoami': 'Seif. Computer Science & Statistics student at Helwan University. Penetration tester in training, aiming for my first bug bounty by May 2026. Living in the terminal.',
         
         'stats': 'Machines Pwned: <span class="highlight">15+</span> (Hack The Box, TryHackMe, VulnHub).',
         
         'projects': '1. Enterprise Active Directory Deployment (Self-hosted real-world server) <br> 2. Chatbot Architecture (Graduation project focusing on modern dev ops)',
+
+        'certs': '<span class="highlight">[ Certified ]</span> Certified Ethical Hacker (CEH v13) - RaiseUP <br> <span class="highlight">[ Certified ]</span> CCNA (200-301) - RaiseUP <br> <span class="highlight">[ Certified ]</span> Exploitation & Penetration Testing with Metasploit - IBM',
         
         'writeups': 'Accessing secure logs... <br> - <a href="https://medium.com/@YOUR_MEDIUM" target="_blank" class="highlight">[ Read all my CTF Write-ups on Medium ]</a>',
 
