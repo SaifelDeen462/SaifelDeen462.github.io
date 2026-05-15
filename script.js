@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ───────────────────────────────────── */
     const canvas  = document.getElementById('matrix-canvas');
     const ctx     = canvas.getContext('2d');
-    const CHARS   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+{}|<>?/\\;:[]~`';
+    const CHARS   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+{}|<>?/\\;:[]~`ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ';
     const FONT_SZ = 14;
     let cols, drops;
 
@@ -40,28 +40,40 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
         cols  = Math.floor(canvas.width / FONT_SZ);
-        drops = Array(cols).fill(1).map(() => Math.random() * -100);
+        drops = Array(cols).fill(1).map(() => Math.random() * -50);
     }
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
     function drawMatrix() {
-        ctx.fillStyle = 'rgba(8, 11, 16, 0.05)';
+        // Semi-transparent black trail — lower = longer trails
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#00ff41';
-        ctx.font      = FONT_SZ + 'px Fira Code, monospace';
 
         drops.forEach((y, i) => {
             const char = CHARS[Math.floor(Math.random() * CHARS.length)];
             const x = i * FONT_SZ;
-            ctx.globalAlpha = Math.random() * 0.6 + 0.1;
+            // Bright white-green head
+            if (Math.random() > 0.95) {
+                ctx.fillStyle = '#ccffdd';
+                ctx.shadowColor = '#00ff41';
+                ctx.shadowBlur = 8;
+            } else {
+                // Gradient: bright near head, dim further up
+                const brightness = Math.random() * 0.5 + 0.2;
+                ctx.fillStyle = `rgba(0, 255, 65, ${brightness})`;
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+            }
+            ctx.font = FONT_SZ + 'px Fira Code, monospace';
             ctx.fillText(char, x, y * FONT_SZ);
-            ctx.globalAlpha = 1;
+
             if (y * FONT_SZ > canvas.height && Math.random() > 0.975) drops[i] = 0;
-            drops[i] += 0.5;
+            drops[i] += 0.6;
         });
+        ctx.shadowBlur = 0;
     }
-    setInterval(drawMatrix, 45);
+    setInterval(drawMatrix, 40);
 
     /* ─────────────────────────────────────
        3. LIVE CLOCK
@@ -273,7 +285,7 @@ CTF write-ups · AD lab configs · security tool breakdowns`,
             body.innerHTML = '';
         } else if (val === 'matrix') {
             matrixVisible = !matrixVisible;
-            canvas.style.opacity = matrixVisible ? '0.045' : '0';
+            canvas.style.opacity = matrixVisible ? '1' : '0';
             printLine(matrixVisible ? '[ OK ] Matrix rain enabled.' : '[ OK ] Matrix rain disabled.');
         } else if (val === 'sudo') {
             printLine('Permission denied. This incident has been logged.', '#ff4d4d');
