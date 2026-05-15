@@ -1,33 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     /* ─────────────────────────────────────
-       1. CUSTOM CURSOR
-    ───────────────────────────────────── */
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mouseX = 0, mouseY = 0;
-    let ringX  = 0, ringY  = 0;
-
-    document.addEventListener('mousemove', e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        dot.style.transform  = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
-    });
-
-    function animateRing() {
-        ringX += (mouseX - ringX) * 0.12;
-        ringY += (mouseY - ringY) * 0.12;
-        ring.style.transform = `translate(${ringX - 14}px, ${ringY - 14}px)`;
-        requestAnimationFrame(animateRing);
-    }
-    animateRing();
-
-    document.querySelectorAll('a, button, .skill-card, .cert-card, #terminal-input').forEach(el => {
-        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
-        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
-    });
-
-    /* ─────────────────────────────────────
        2. MATRIX RAIN CANVAS
     ───────────────────────────────────── */
     const canvas  = document.getElementById('matrix-canvas');
@@ -307,23 +280,5 @@ CTF write-ups · AD lab configs · security tool breakdowns`,
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    /* ─────────────────────────────────────
-       10. TERMINAL TYPING SOUND (subtle)
-    ───────────────────────────────────── */
-    input.addEventListener('keydown', () => {
-        try {
-            const ac = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ac.createOscillator();
-            const gain = ac.createGain();
-            osc.connect(gain);
-            gain.connect(ac.destination);
-            osc.frequency.value = 800 + Math.random() * 400;
-            osc.type = 'square';
-            gain.gain.setValueAtTime(0.03, ac.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04);
-            osc.start(ac.currentTime);
-            osc.stop(ac.currentTime + 0.04);
-        } catch(e) {}
-    });
 
 });
