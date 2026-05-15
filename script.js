@@ -1,97 +1,317 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    /* --- 1. SCROLL REVEAL ANIMATION --- */
+
+    /* ─────────────────────────────────────
+       1. CUSTOM CURSOR
+    ───────────────────────────────────── */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mouseX = 0, mouseY = 0;
+    let ringX  = 0, ringY  = 0;
+
+    document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.transform  = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
+    });
+
+    function animateRing() {
+        ringX += (mouseX - ringX) * 0.12;
+        ringY += (mouseY - ringY) * 0.12;
+        ring.style.transform = `translate(${ringX - 14}px, ${ringY - 14}px)`;
+        requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, .skill-card, .cert-card, #terminal-input').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    /* ─────────────────────────────────────
+       2. MATRIX RAIN CANVAS
+    ───────────────────────────────────── */
+    const canvas  = document.getElementById('matrix-canvas');
+    const ctx     = canvas.getContext('2d');
+    const CHARS   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+{}|<>?/\\;:[]~`';
+    const FONT_SZ = 14;
+    let cols, drops;
+
+    function resizeCanvas() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        cols  = Math.floor(canvas.width / FONT_SZ);
+        drops = Array(cols).fill(1).map(() => Math.random() * -100);
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(8, 11, 16, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#00ff41';
+        ctx.font      = FONT_SZ + 'px Fira Code, monospace';
+
+        drops.forEach((y, i) => {
+            const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+            const x = i * FONT_SZ;
+            ctx.globalAlpha = Math.random() * 0.6 + 0.1;
+            ctx.fillText(char, x, y * FONT_SZ);
+            ctx.globalAlpha = 1;
+            if (y * FONT_SZ > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i] += 0.5;
+        });
+    }
+    setInterval(drawMatrix, 45);
+
+    /* ─────────────────────────────────────
+       3. LIVE CLOCK
+    ───────────────────────────────────── */
+    function updateClock() {
+        const now = new Date();
+        const str = now.toLocaleTimeString('en-GB', { hour12: false }) + ' UTC';
+        document.getElementById('live-time').textContent = str;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    /* ─────────────────────────────────────
+       4. TYPEWRITER HERO
+    ───────────────────────────────────── */
+    const phrases = [
+        'Penetration Tester',
+        'CTF Enthusiast',
+        'Arch Linux User',
+        'Ethical Hacker',
+        'Network Engineer',
+    ];
+    let pIdx = 0, cIdx = 0, deleting = false;
+    const tw = document.getElementById('typewriter-text');
+
+    function typeLoop() {
+        const phrase = phrases[pIdx];
+        if (!deleting) {
+            tw.textContent = phrase.slice(0, ++cIdx);
+            if (cIdx === phrase.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
+        } else {
+            tw.textContent = phrase.slice(0, --cIdx);
+            if (cIdx === 0) { deleting = false; pIdx = (pIdx + 1) % phrases.length; }
+        }
+        setTimeout(typeLoop, deleting ? 55 : 90);
+    }
+    setTimeout(typeLoop, 1000);
+
+    /* ─────────────────────────────────────
+       5. SCROLL REVEAL
+    ───────────────────────────────────── */
     function reveal() {
-        var reveals = document.querySelectorAll(".reveal");
-        for (var i = 0; i < reveals.length; i++) {
-            var windowHeight = window.innerHeight;
-            var elementTop = reveals[i].getBoundingClientRect().top;
-            var elementVisible = 100; // how many pixels before it triggers
-
-            if (elementTop < windowHeight - elementVisible) {
-                reveals[i].classList.add("active");
+        document.querySelectorAll('.reveal').forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight - 80) {
+                el.classList.add('active');
+                animateBarsIfNeeded(el);
+                animateCountersIfNeeded(el);
             }
-        }
+        });
     }
-    window.addEventListener("scroll", reveal);
-    reveal(); // Trigger once on load
+    window.addEventListener('scroll', reveal);
+    reveal();
 
-    /* --- 2. TERMINAL LOGIC --- */
-    const inputField = document.getElementById('terminal-input');
-    const terminalBody = document.getElementById('terminal-body');
-
-    terminalBody.innerHTML = ''; 
-
-    // The typing animation function
-    const welcomeText = "Booting sequence initiated... \nConnecting to Arch Linux subsystem... \nWelcome. \nType 'help' to see available commands.";
-    let i = 0;
-    
-    function typeWriter() {
-        if (i < welcomeText.length) {
-            if (welcomeText.charAt(i) === '\n') {
-                terminalBody.innerHTML += '<br>';
-            } else {
-                terminalBody.innerHTML += welcomeText.charAt(i);
-            }
-            if (i === welcomeText.length - 1) {
-                terminalBody.innerHTML = terminalBody.innerHTML.replace("'help'", "<span class='highlight'>'help'</span>");
-            }
-            i++;
-            setTimeout(typeWriter, 30);
-        }
+    /* ─────────────────────────────────────
+       6. ANIMATED COUNTERS
+    ───────────────────────────────────── */
+    const countedEls = new Set();
+    function animateCountersIfNeeded(el) {
+        el.querySelectorAll('.stat-num[data-target]').forEach(num => {
+            if (countedEls.has(num)) return;
+            countedEls.add(num);
+            const target = parseInt(num.dataset.target);
+            let cur = 0;
+            const step = Math.ceil(target / 30);
+            const timer = setInterval(() => {
+                cur = Math.min(cur + step, target);
+                num.textContent = cur;
+                if (cur >= target) clearInterval(timer);
+            }, 50);
+        });
     }
 
-    typeWriter();
+    /* ─────────────────────────────────────
+       7. SKILL PROGRESS BARS
+    ───────────────────────────────────── */
+    const animatedBars = new Set();
+    function animateBarsIfNeeded(el) {
+        el.querySelectorAll('.bar-fill[data-width]').forEach(bar => {
+            if (animatedBars.has(bar)) return;
+            animatedBars.add(bar);
+            setTimeout(() => { bar.style.width = bar.dataset.width; }, 200);
+        });
+    }
 
-    // Command responses
+    /* ─────────────────────────────────────
+       8. RANDOM GLITCH FLASH
+    ───────────────────────────────────── */
+    const glitchOverlay = document.getElementById('glitch-overlay');
+    function triggerGlitch() {
+        glitchOverlay.style.opacity   = '1';
+        glitchOverlay.style.background = `rgba(${Math.random()>0.5?255:0},${Math.random()>0.5?255:0},${Math.random()>0.5?255:0},0.03)`;
+        glitchOverlay.style.transform = `translateX(${(Math.random()-0.5)*6}px)`;
+        setTimeout(() => {
+            glitchOverlay.style.opacity   = '0';
+            glitchOverlay.style.transform = 'none';
+        }, 80);
+        setTimeout(triggerGlitch, Math.random() * 8000 + 4000);
+    }
+    setTimeout(triggerGlitch, 3000);
+
+    /* ─────────────────────────────────────
+       9. TERMINAL
+    ───────────────────────────────────── */
+    const input  = document.getElementById('terminal-input');
+    const body   = document.getElementById('terminal-body');
+    const history = [];
+    let histIdx = -1;
+
     const commands = {
-        'help': 'Available commands: <br> - <span class="highlight">whoami</span>: Display user info <br> - <span class="highlight">stats</span>: Show machine solve counts <br> - <span class="highlight">projects</span>: List current projects <br> - <span class="highlight">certs</span>: Display active certifications <br> - <span class="highlight">writeups</span>: Access technical logs and blogs <br> - <span class="highlight">clear</span>: Clear terminal output',
-        
-        'whoami': 'Seif. Computer Science & Statistics  at Helwan University. Penetration tester  , Living in the terminal.',
-        
-        'stats': 'Machines Pwned: <span class="highlight">15+</span> (Hack The Box, TryHackMe, VulnHub).',
-        
-        'projects': '1. Enterprise Active Directory Deployment (Self-hosted real-world server) <br> 2. Chatbot Architecture (Graduation project focusing on modern dev ops)',
+        help: `Available commands:<br>
+  <span class="highlight">whoami</span>     — user profile<br>
+  <span class="highlight">stats</span>      — machine solve counts<br>
+  <span class="highlight">projects</span>   — active projects<br>
+  <span class="highlight">certs</span>      — certifications<br>
+  <span class="highlight">skills</span>     — technical skills<br>
+  <span class="highlight">writeups</span>   — Medium blog & CTF logs<br>
+  <span class="highlight">contact</span>    — social links<br>
+  <span class="highlight">clear</span>      — clear terminal<br>
+  <span class="highlight">matrix</span>     — toggle matrix rain`,
 
-        'certs': '<span class="highlight">[ Certified ]</span> Certified Ethical Hacker (CEH v13) - RaiseUP <br> <span class="highlight">[ Certified ]</span> CCNA (200-301) - RaiseUP <br> <span class="highlight">[ Certified ]</span> Exploitation & Penetration Testing with Metasploit - IBM',
-        
-        'writeups': 'Accessing secure logs... <br> - <a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="highlight">[ Read all my CTF Write-ups on Medium ]</a>',
+        whoami: `<span class="highlight">Seif El-Deen</span> — Penetration Tester<br>
+B.Sc. Computer Science & Statistics · Helwan University<br>
+Living in the terminal. Arch Linux. Coffee-fueled.`,
 
-        'clear': ''
+        stats: `Machines Pwned: <span class="highlight">15+</span><br>
+Platforms: Hack The Box · TryHackMe · VulnHub<br>
+Focus: Web · AD · PrivEsc`,
+
+        projects: `<span class="highlight">[1]</span> Enterprise Active Directory Lab (Win Server, DNS/DHCP, GPO)<br>
+<span class="highlight">[2]</span> AI Chatbot — Graduation project (RAG + intent modeling)<br>
+<span class="highlight">[3]</span> Custom Recon Automation Script (Bash/Python)<br>
+<span class="highlight">[4]</span> This portfolio (hand-crafted, no templates)`,
+
+        certs: `<span class="highlight">[✓]</span> Certified Ethical Hacker CEH v13 — RaiseUP<br>
+<span class="highlight">[✓]</span> CCNA 200-301 — RaiseUP<br>
+<span class="highlight">[✓]</span> Exploitation & Penetration Testing w/ Metasploit — IBM`,
+
+        skills: `<span class="highlight">Offensive:</span>  Recon · Web Exploitation · PrivEsc · Post-Exploitation<br>
+<span class="highlight">Tools:</span>     Nmap · Burp Suite · Metasploit · Hydra · Gobuster · FFUF<br>
+<span class="highlight">Dev:</span>       Python · Bash · Prompt Engineering · RAG<br>
+<span class="highlight">Infra:</span>     Windows AD · DNS · DHCP · Group Policy`,
+
+        writeups: `<a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="highlight">→ medium.com/@seifeldeenhamouda</a><br>
+CTF write-ups · AD lab configs · security tool breakdowns`,
+
+        contact: `<span class="highlight">GitHub:</span>   <a href="https://github.com/SaifelDeen462" target="_blank" class="highlight">github.com/SaifelDeen462</a><br>
+<span class="highlight">LinkedIn:</span> <a href="https://linkedin.com/in/saif-el-deen-b56b02382" target="_blank" class="highlight">linkedin.com/in/saif-el-deen-b56b02382</a><br>
+<span class="highlight">Medium:</span>   <a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="highlight">medium.com/@seifeldeenhamouda</a>`,
+
+        matrix: 'Toggling matrix rain...',
+        clear: '',
     };
 
-    inputField.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            const inputVal = inputField.value.trim().toLowerCase();
-            if (inputVal === '') return;
+    // Boot sequence
+    const boot = [
+        '[ OK ] Kernel loaded',
+        '[ OK ] Network interface up',
+        '[ OK ] Firewall rules applied',
+        '[ !! ] Unidentified guest detected',
+        '[ >> ] Spawning restricted shell...',
+        '',
+        "Type <span class='highlight'>'help'</span> to see available commands.",
+    ];
 
-            const echoLine = document.createElement('p');
-            echoLine.innerHTML = `<span class="prompt">seif@guest:~$</span> ${inputVal}`;
-            terminalBody.appendChild(echoLine);
+    let bi = 0;
+    function printBoot() {
+        if (bi >= boot.length) return;
+        const p = document.createElement('p');
+        p.innerHTML = boot[bi++];
+        body.appendChild(p);
+        body.scrollTop = body.scrollHeight;
+        setTimeout(printBoot, 160);
+    }
+    printBoot();
 
-            if (inputVal === 'clear') {
-                terminalBody.innerHTML = '';
-            } else if (commands[inputVal]) {
-                const responseLine = document.createElement('p');
-                responseLine.innerHTML = commands[inputVal];
-                terminalBody.appendChild(responseLine);
-            } else if (inputVal === 'sudo') {
-                const responseLine = document.createElement('p');
-                responseLine.innerHTML = 'Nice try. This incident will be reported.';
-                responseLine.style.color = '#ff5f56';
-                terminalBody.appendChild(responseLine);
-            } else {
-                const errorLine = document.createElement('p');
-                errorLine.innerHTML = `bash: ${inputVal}: command not found. Type <span class="highlight">'help'</span>.`;
-                terminalBody.appendChild(errorLine);
-            }
+    function printLine(html, color) {
+        const p = document.createElement('p');
+        p.innerHTML = html;
+        if (color) p.style.color = color;
+        body.appendChild(p);
+        body.scrollTop = body.scrollHeight;
+    }
 
-            inputField.value = '';
-            terminalBody.scrollTop = terminalBody.scrollHeight;
+    let matrixVisible = true;
+    input.addEventListener('keydown', e => {
+        if (e.key === 'ArrowUp') {
+            if (histIdx < history.length - 1) histIdx++;
+            input.value = history[histIdx] || '';
+            e.preventDefault();
+        }
+        if (e.key === 'ArrowDown') {
+            if (histIdx > 0) histIdx--;
+            input.value = history[histIdx] || '';
+            e.preventDefault();
         }
     });
 
-    document.querySelector('.terminal-container').addEventListener('click', () => {
-        inputField.focus();
+    input.addEventListener('keypress', e => {
+        if (e.key !== 'Enter') return;
+        const val = input.value.trim().toLowerCase();
+        if (!val) return;
+
+        history.unshift(val);
+        histIdx = -1;
+
+        printLine(`<span class="prompt" style="font-size:0.88rem;color:#00ff41;text-shadow:0 0 6px #00ff41">seif@guest:~$&nbsp;</span>${escapeHtml(val)}`);
+
+        if (val === 'clear') {
+            body.innerHTML = '';
+        } else if (val === 'matrix') {
+            matrixVisible = !matrixVisible;
+            canvas.style.opacity = matrixVisible ? '0.045' : '0';
+            printLine(matrixVisible ? '[ OK ] Matrix rain enabled.' : '[ OK ] Matrix rain disabled.');
+        } else if (val === 'sudo') {
+            printLine('Permission denied. This incident has been logged.', '#ff4d4d');
+        } else if (val === 'sudo su' || val === 'sudo -i') {
+            printLine('[sudo] password for seif: <br>Sorry, try again.<br>seif is not in the sudoers file.', '#ff4d4d');
+        } else if (commands[val] !== undefined) {
+            if (commands[val]) printLine(commands[val]);
+        } else {
+            printLine(`bash: <span style="color:#ff4d4d">${escapeHtml(val)}</span>: command not found. Type <span class="highlight">'help'</span>.`);
+        }
+
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
     });
+
+    document.querySelector('.terminal-container').addEventListener('click', () => input.focus());
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ─────────────────────────────────────
+       10. TERMINAL TYPING SOUND (subtle)
+    ───────────────────────────────────── */
+    input.addEventListener('keydown', () => {
+        try {
+            const ac = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ac.createOscillator();
+            const gain = ac.createGain();
+            osc.connect(gain);
+            gain.connect(ac.destination);
+            osc.frequency.value = 800 + Math.random() * 400;
+            osc.type = 'square';
+            gain.gain.setValueAtTime(0.03, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04);
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.04);
+        } catch(e) {}
+    });
+
 });
