@@ -4,8 +4,8 @@
 
 :root {
     --bg:          #080b10;
-    --bg-dark:     #020408;
-    --bg-card:     #0c111a;
+    --bg-dark:     #000000;
+    --bg-card:     rgba(6, 10, 16, 0.82);
     --green:       #00ff41;
     --green-dim:   rgba(0, 255, 65, 0.12);
     --green-mid:   rgba(0, 255, 65, 0.35);
@@ -14,7 +14,7 @@
     --yellow:      #f0c040;
     --text:        #c9d1d9;
     --text-dim:    #8b949e;
-    --border:      #1e2633;
+    --border:      rgba(40, 55, 70, 0.8);
     --font:        'Fira Code', 'Share Tech Mono', monospace;
     --glow:        0 0 12px var(--green), 0 0 30px rgba(0,255,65,0.15);
 }
@@ -25,7 +25,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-    background: var(--bg);
+    background: #000;
     color: var(--text);
     font-family: var(--font);
     line-height: 1.65;
@@ -64,25 +64,13 @@ body {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 0;
-    opacity: 0.045;
+    opacity: 1;
     pointer-events: none;
+    background: #000;
 }
 
-/* ─── CYBER GRID ────────────────────────── */
-.cyber-grid {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background-image:
-        linear-gradient(rgba(0,255,65,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,65,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    z-index: 0;
-    animation: gridMove 20s linear infinite;
-    pointer-events: none;
-}
-@keyframes gridMove {
-    0%   { background-position: 0 0; }
-    100% { background-position: 0 40px; }
-}
+/* ─── CYBER GRID (removed — matrix is background) ─── */
+.cyber-grid { display: none; }
 
 /* ─── SCANLINES ─────────────────────────── */
 .scanlines {
@@ -116,6 +104,16 @@ body {
     padding: 0 24px 80px;
     position: relative;
     z-index: 10;
+}
+
+/* Glass panel behind all content */
+.container::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* ─── STATUS BAR ────────────────────────── */
@@ -256,6 +254,8 @@ header {
     background: var(--bg-card);
     border-radius: 4px;
     overflow: hidden;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .stat-item {
     flex: 1;
@@ -287,7 +287,7 @@ header {
 
 /* ─── TERMINAL ──────────────────────────── */
 .terminal-container {
-    background: var(--bg-dark);
+    background: rgba(0, 4, 8, 0.78);
     border: 1px solid var(--border);
     border-radius: 8px;
     margin-bottom: 70px;
@@ -295,6 +295,8 @@ header {
     transition: box-shadow 0.4s ease;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 .terminal-container::before {
     content: '';
@@ -416,6 +418,8 @@ header {
     overflow: hidden;
     transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
     animation-delay: var(--delay, 0s);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .skill-card-glow {
     position: absolute; top: -50%; left: -50%;
@@ -453,7 +457,7 @@ header {
 }
 
 /* ─── SKILL BARS ────────────────────────── */
-.skill-bars { border: 1px solid var(--border); border-radius: 6px; padding: 22px; background: var(--bg-card); }
+.skill-bars { border: 1px solid var(--border); border-radius: 6px; padding: 22px; background: var(--bg-card); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .bar-row {
     display: flex;
     align-items: center;
@@ -492,6 +496,8 @@ header {
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .cert-card:hover {
     border-color: rgba(0,255,65,0.2);
@@ -552,7 +558,7 @@ header {
     50%       { box-shadow: 0 0 18px var(--green), 0 0 30px rgba(0,255,65,0.2); }
 }
 
-.timeline-content { border: 1px solid var(--border); border-radius: 5px; padding: 16px 18px; background: var(--bg-card); transition: border-color 0.3s; }
+.timeline-content { border: 1px solid var(--border); border-radius: 5px; padding: 16px 18px; background: var(--bg-card); transition: border-color 0.3s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .timeline-content:hover { border-color: rgba(0,255,65,0.2); }
 .timeline-content strong { display: block; font-size: 0.95rem; color: var(--text); margin-bottom: 6px; }
 .timeline-content p { font-size: 0.83rem; color: var(--text-dim); }
@@ -578,6 +584,8 @@ header {
     border-radius: 5px;
     padding: 18px;
     margin-bottom: 20px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 .log-line { margin-bottom: 6px; }
 .log-line:last-child { margin-bottom: 0; }
