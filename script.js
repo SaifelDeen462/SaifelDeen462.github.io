@@ -86,21 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(typeLoop, 1000);
 
     /* ─────────────────────────────────────
-       5. SCROLL REVEAL
-    ───────────────────────────────────── */
-    function reveal() {
-        document.querySelectorAll('.reveal').forEach(el => {
-            if (el.getBoundingClientRect().top < window.innerHeight - 80) {
-                el.classList.add('active');
-                animateBarsIfNeeded(el);
-                animateCountersIfNeeded(el);
-            }
-        });
-    }
-    window.addEventListener('scroll', reveal);
-    reveal();
-
-    /* ─────────────────────────────────────
        6. ANIMATED COUNTERS
     ───────────────────────────────────── */
     const countedEls = new Set();
@@ -130,6 +115,22 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { bar.style.width = bar.dataset.width; }, 200);
         });
     }
+
+    /* ─────────────────────────────────────
+       5. SCROLL REVEAL — IntersectionObserver
+    ───────────────────────────────────── */
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                animateBarsIfNeeded(entry.target);
+                animateCountersIfNeeded(entry.target);
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
     /* ─────────────────────────────────────
        8. RANDOM GLITCH FLASH
