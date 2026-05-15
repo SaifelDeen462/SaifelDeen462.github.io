@@ -5,105 +5,289 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seif | Cybersecurity Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="cyber-grid"></div> <div class="container">
+
+    <!-- Animated background layers -->
+    <canvas id="matrix-canvas"></canvas>
+    <div class="cyber-grid"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
+    <!-- Glitch overlay text -->
+    <div class="glitch-overlay" id="glitch-overlay"></div>
+
+    <!-- Custom cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <div class="container">
+
+        <!-- HERO HEADER -->
         <header class="reveal">
-            <h1><span class="prompt">root@seif:~#</span> ./portfolio.sh</h1>
-            <p class="tagline">B.Sc. Computer Science & Statistics | Cyber Security Specialist</p>
-            <div class="links">
-                <a href="https://github.com/SaifelDeen462" target="_blank">[ GitHub ]</a>
-                <a href="https://linkedin.com/in/saif-el-deen-b56b02382" target="_blank">[ LinkedIn ]</a>
-                <a href="https://medium.com/@seifeldeenhamouda" target="_blank">[ Medium Write-ups ]</a>
+            <div class="header-top">
+                <div class="status-bar">
+                    <span class="status-indicator"></span>
+                    <span id="live-time"></span>
+                    <span class="sep">|</span>
+                    <span>SECURE CONNECTION ESTABLISHED</span>
+                    <span class="sep">|</span>
+                    <span id="ip-display">IP: 127.0.0.1</span>
+                </div>
+            </div>
+
+            <div class="hero-content">
+                <div class="glitch-wrapper">
+                    <h1 class="glitch-text" data-text="SEIF EL-DEEN">SEIF EL-DEEN</h1>
+                </div>
+                <div class="ascii-art">
+                    <pre id="ascii-pre"></pre>
+                </div>
+                <div class="typewriter-wrapper">
+                    <span class="prompt-inline">root@seif:~#</span>
+                    <span id="typewriter-text"></span><span class="cursor-blink">▋</span>
+                </div>
+                <p class="tagline">B.Sc. Computer Science & Statistics · Cyber Security Specialist</p>
+
+                <div class="links">
+                    <a href="https://github.com/SaifelDeen462" target="_blank" class="nav-link">
+                        <span class="link-bracket">[</span> GitHub <span class="link-bracket">]</span>
+                    </a>
+                    <a href="https://linkedin.com/in/saif-el-deen-b56b02382" target="_blank" class="nav-link">
+                        <span class="link-bracket">[</span> LinkedIn <span class="link-bracket">]</span>
+                    </a>
+                    <a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="nav-link">
+                        <span class="link-bracket">[</span> Medium <span class="link-bracket">]</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Animated stats bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-num" data-target="15">0</span><span class="stat-plus">+</span>
+                    <span class="stat-label">Machines Pwned</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-num" data-target="3">0</span>
+                    <span class="stat-label">Certifications</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-num" data-target="4">0</span>
+                    <span class="stat-label">Active Projects</span>
+                </div>
             </div>
         </header>
 
         <main>
-            <section class="terminal-container reveal">
+
+            <!-- INTERACTIVE TERMINAL -->
+            <section class="terminal-container reveal" id="terminal-section">
                 <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="title">bash - seif@archlinux</span>
-                </div>
-                <div class="terminal-body" id="terminal-body">
+                    <div class="dot-group">
+                        <span class="dot red" title="close"></span>
+                        <span class="dot yellow" title="minimize"></span>
+                        <span class="dot green" title="maximize"></span>
                     </div>
+                    <span class="terminal-title">bash — seif@archlinux — 80×24</span>
+                    <div class="terminal-header-right">
+                        <span class="term-badge">SSH</span>
+                        <span class="term-badge enc">ENCRYPTED</span>
+                    </div>
+                </div>
+                <div class="terminal-body" id="terminal-body"></div>
                 <div class="terminal-input-line">
-                    <span class="prompt">seif@guest:~$</span>
-                    <input type="text" id="terminal-input" autocomplete="off" autofocus>
+                    <span class="prompt">seif@guest:~$&nbsp;</span>
+                    <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" placeholder="type 'help'...">
                 </div>
             </section>
 
+            <!-- TECHNICAL ARSENAL -->
             <section class="content-section reveal">
-                <h2>>> Technical Arsenal</h2>
+                <h2 class="section-title">
+                    <span class="section-prefix">//</span> Technical Arsenal
+                    <span class="section-line"></span>
+                </h2>
                 <div class="skills-grid">
-                    <div class="skill-card">
+                    <div class="skill-card" style="--delay:0s">
+                        <div class="skill-card-glow"></div>
+                        <div class="skill-icon">⚔</div>
                         <h3>Offensive Security</h3>
-                        <p>Reconnaissance & enumeration, web exploitation, privilege escalation (Win/Linux), and post-exploitation. 15+ Machines Pwned across HTB, THM, and VulnHub.</p>
+                        <p>Reconnaissance & enumeration, web exploitation, privilege escalation (Win/Linux), and post-exploitation.</p>
+                        <div class="skill-tag-row">
+                            <span class="skill-tag">HTB</span>
+                            <span class="skill-tag">THM</span>
+                            <span class="skill-tag">VulnHub</span>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" style="--delay:0.1s">
+                        <div class="skill-card-glow"></div>
+                        <div class="skill-icon">🛠</div>
                         <h3>Core Tools</h3>
                         <p>Nmap, Burp Suite, Metasploit, Wireshark, Hydra, Gobuster, and FFUF.</p>
+                        <div class="skill-tag-row">
+                            <span class="skill-tag">Nmap</span>
+                            <span class="skill-tag">Burp</span>
+                            <span class="skill-tag">MSF</span>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" style="--delay:0.2s">
+                        <div class="skill-card-glow"></div>
+                        <div class="skill-icon">🏗</div>
                         <h3>Infrastructure Labs</h3>
-                        <p>Windows Server & Networking Lab: Deployed a domain controller (DNS/DHCP), managing users, permissions, and group policies in a simulated enterprise environment.</p>
+                        <p>Deployed a domain controller (DNS/DHCP), managing users, permissions, and group policies in a simulated enterprise environment.</p>
+                        <div class="skill-tag-row">
+                            <span class="skill-tag">AD</span>
+                            <span class="skill-tag">DNS</span>
+                            <span class="skill-tag">DHCP</span>
+                        </div>
                     </div>
-                    <div class="skill-card">
+                    <div class="skill-card" style="--delay:0.3s">
+                        <div class="skill-card-glow"></div>
+                        <div class="skill-icon">⚡</div>
                         <h3>Development & AI</h3>
                         <p>Bash automation, Python scripting, Prompt Engineering, and modern AI architectures (RAG, intent-based modeling).</p>
+                        <div class="skill-tag-row">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Bash</span>
+                            <span class="skill-tag">RAG</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skill progress bars -->
+                <div class="skill-bars reveal">
+                    <div class="bar-row">
+                        <span class="bar-label">Web Exploitation</span>
+                        <div class="bar-track"><div class="bar-fill" data-width="82%"></div></div>
+                        <span class="bar-pct">82%</span>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Network Security</span>
+                        <div class="bar-track"><div class="bar-fill" data-width="78%"></div></div>
+                        <span class="bar-pct">78%</span>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Privilege Escalation</span>
+                        <div class="bar-track"><div class="bar-fill" data-width="70%"></div></div>
+                        <span class="bar-pct">70%</span>
+                    </div>
+                    <div class="bar-row">
+                        <span class="bar-label">Python / Scripting</span>
+                        <div class="bar-track"><div class="bar-fill" data-width="75%"></div></div>
+                        <span class="bar-pct">75%</span>
                     </div>
                 </div>
             </section>
 
+            <!-- CERTIFICATIONS -->
             <section class="content-section reveal">
-                <h2>>> Certifications & Badges</h2>
+                <h2 class="section-title">
+                    <span class="section-prefix">//</span> Certifications & Badges
+                    <span class="section-line"></span>
+                </h2>
+                <div class="cert-grid">
+                    <div class="cert-card">
+                        <div class="cert-icon">🏆</div>
+                        <div class="cert-info">
+                            <span class="cert-badge">CERTIFIED</span>
+                            <h3>Certified Ethical Hacker (CEH v13)</h3>
+                            <p>RaiseUP</p>
+                        </div>
+                        <div class="cert-glow-line"></div>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">🌐</div>
+                        <div class="cert-info">
+                            <span class="cert-badge">CERTIFIED</span>
+                            <h3>CCNA (200-301)</h3>
+                            <p>RaiseUP</p>
+                        </div>
+                        <div class="cert-glow-line"></div>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">⚙</div>
+                        <div class="cert-info">
+                            <span class="cert-badge">CERTIFIED</span>
+                            <h3>Exploitation & Penetration Testing with Metasploit</h3>
+                            <p>IBM</p>
+                        </div>
+                        <div class="cert-glow-line"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRAINING & DIRECTIVES -->
+            <section class="content-section reveal">
+                <h2 class="section-title">
+                    <span class="section-prefix">//</span> Training & Directives
+                    <span class="section-line"></span>
+                </h2>
                 <div class="timeline">
                     <div class="timeline-item">
-                        <span class="highlight">[ Certified ]</span> <strong>Certified Ethical Hacker (CEH v13)</strong>
-                        <p>RaiseUP</p>
+                        <div class="timeline-dot pulse-dot"></div>
+                        <div class="timeline-content">
+                            <span class="tl-badge active">ACTIVE</span>
+                            <strong>DEPI Penetration Testing Course</strong>
+                            <p>Full attack lifecycle training. Applying Prompt Engineering to workflows and engaging in Web Vulnerabilities.</p>
+                        </div>
                     </div>
                     <div class="timeline-item">
-                        <span class="highlight">[ Certified ]</span> <strong>CCNA (200-301)</strong>
-                        <p>RaiseUP</p>
+                        <div class="timeline-dot pulse-dot"></div>
+                        <div class="timeline-content">
+                            <span class="tl-badge active">ACTIVE</span>
+                            <strong>Helwan University</strong>
+                            <p>B.Sc. in Computer Science and Statistics. Merging mathematical data analysis with computer architecture.</p>
+                        </div>
                     </div>
                     <div class="timeline-item">
-                        <span class="highlight">[ Certified ]</span> <strong>Exploitation & Penetration Testing with Metasploit</strong>
-                        <p>IBM</p>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="tl-badge focus">FOCUS</span>
+                            <strong>Web Security</strong>
+                            <p>Advancing skills in web application testing and vulnerability identification.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="tl-badge core">CORE</span>
+                            <strong>Network Architecture & Security</strong>
+                            <p>Solid foundation in enterprise network design, routing, switching, and secure infrastructure, backed by CCNA training and hands-on deployments.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section class="content-section reveal">
-                <h2>>> Training & Directives</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <span class="highlight">[ Active ]</span> <strong>DEPI Penetration Testing Course</strong>
-                        <p>Full attack lifecycle training. Applying Prompt Engineering to workflows and engaging in Web Vulnerabilities.</p>
+            <!-- LOGS -->
+            <section class="content-section reveal logs-section">
+                <h2 class="section-title">
+                    <span class="section-prefix">//</span> Transmissions & Logs
+                    <span class="section-line"></span>
+                </h2>
+                <div class="logs-content">
+                    <div class="log-preview">
+                        <div class="log-line"><span class="log-time">[SYS]</span> CTF write-ups · Active Directory configs · Tool development</div>
+                        <div class="log-line"><span class="log-time">[INF]</span> Published on Medium — public access available</div>
+                        <div class="log-line"><span class="log-time">[OK ]</span> Connection ready. Awaiting authorization...</div>
+                        <div class="log-line blinking"><span class="log-time">[►  ]</span> Click below to access logs_</div>
                     </div>
-                    <div class="timeline-item">
-                        <span class="highlight">[ Active ]</span> <strong>Helwan University</strong>
-                        <p>B.Sc. in Computer Science and Statistics. Merging mathematical data analysis with computer architecture.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="highlight">[ Focus ]</span> <strong> Web Security</strong>
-                        <p>Advancing skills in web application testing and vulnerability identification.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <span class="highlight">[ Core ]</span> <strong>Network Architecture & Security</strong>
-                        <p>Solid foundation in enterprise network design, routing, switching, and secure infrastructure, backed by CCNA training and hands-on deployments.</p>
-                    </div>
+                    <a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="cyber-button">
+                        <span class="btn-prefix">></span> ACCESS MEDIUM LOGS <span class="btn-suffix">▶</span>
+                    </a>
                 </div>
             </section>
 
-            <section class="content-section reveal">
-                <h2>>> Transmissions & Logs</h2>
-                <p>Detailed breakdowns of CTF machines, Active Directory lab configurations, and custom tool development.</p>
-                <a href="https://medium.com/@seifeldeenhamouda" target="_blank" class="cyber-button">ACCESS MEDIUM LOGS</a>
-            </section>
         </main>
+
+        <footer class="reveal">
+            <p><span class="prompt-inline">seif@archlinux:~#</span> exit 0 &nbsp;·&nbsp; <span class="dim">EOF</span></p>
+        </footer>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
