@@ -3,19 +3,19 @@
    ========================================= */
 
 :root {
-    --bg:        #000;
-    --bg-card:   rgba(4, 8, 14, 0.85);
-    --green:     #00ff41;
-    --green-dim: rgba(0, 255, 65, 0.12);
-    --green-mid: rgba(0, 255, 65, 0.35);
-    --blue:      #58a6ff;
-    --red:       #ff4d4d;
-    --yellow:    #f0c040;
-    --text:      #c9d1d9;
-    --text-dim:  #8b949e;
-    --border:    rgba(45, 60, 78, 0.9);
-    --font:      'Fira Code', 'Share Tech Mono', monospace;
-    --glow:      0 0 12px var(--green), 0 0 30px rgba(0,255,65,0.15);
+    --bg:         #000;
+    --bg-card:    rgba(4, 8, 14, 0.85);
+    --green:      #00ff41;
+    --green-dim:  rgba(0, 255, 65, 0.12);
+    --green-mid:  rgba(0, 255, 65, 0.35);
+    --blue:       #58a6ff;
+    --red:        #ff4d4d;
+    --yellow:     #f0c040;
+    --text:       #c9d1d9;
+    --text-dim:   #8b949e;
+    --border:     rgba(45, 60, 78, 0.9);
+    --font:       'Fira Code', 'Share Tech Mono', monospace;
+    --glow:       0 0 12px var(--green), 0 0 30px rgba(0,255,65,0.15);
 }
 
 /* ─── RESET ─────────────────────────────── */
@@ -31,32 +31,23 @@ body {
     cursor: default;
 }
 
-/* ─── Z-INDEX STACK ──────────────────────
-   0  = matrix canvas (fixed, behind all)
-   1  = scanlines + vignette (fixed overlays)
-   2  = glitch overlay (fixed)
-   5  = dark overlay so text is readable
-   10 = .container (all page content)
-─────────────────────────────────────── */
-
 /* ─── MATRIX CANVAS ─────────────────────── */
 #matrix-canvas {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    z-index: 0;
+    z-index: -2; /* Pushed to the absolute back */
     pointer-events: none;
     background: #000;
 }
 
 /* ─── DARK OVERLAY over matrix ───────────── */
-/* Makes text readable without hiding the matrix */
 .matrix-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.62);
-    z-index: 1;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: -1; /* Between matrix and content */
     pointer-events: none;
 }
 
@@ -69,8 +60,8 @@ body {
         transparent, transparent 2px,
         rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px
     );
-    z-index: 2;
-    pointer-events: none;
+    z-index: 1;
+    pointer-events: none; /* Allows clicking through to content */
 }
 
 /* ─── VIGNETTE ──────────────────────────── */
@@ -78,7 +69,7 @@ body {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.75) 100%);
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
 }
 
@@ -86,7 +77,7 @@ body {
 .glitch-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 3;
+    z-index: 2;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.05s;
@@ -98,7 +89,7 @@ body {
     margin: 0 auto;
     padding: 0 24px 80px;
     position: relative;
-    z-index: 10;   /* above ALL fixed layers */
+    z-index: 10; /* Highest layer to ensure interaction and visibility */
 }
 
 /* ─── STATUS BAR ────────────────────────── */
@@ -130,7 +121,7 @@ body {
 
 @keyframes pulse {
     0%, 100% { opacity: 1; }
-    50%       { opacity: 0.3; }
+    50%        { opacity: 0.3; }
 }
 
 /* ─── HEADER ────────────────────────────── */
@@ -172,15 +163,15 @@ header {
 }
 @keyframes glitch-before {
     0%, 92%, 100%  { transform: none; opacity: 0; }
-    93%            { transform: translateX(-4px); opacity: 0.8; }
-    95%            { transform: translateX(4px);  opacity: 0.8; }
-    97%            { transform: translateX(-2px); opacity: 0.6; }
+    93%             { transform: translateX(-4px); opacity: 0.8; }
+    95%             { transform: translateX(4px);  opacity: 0.8; }
+    97%             { transform: translateX(-2px); opacity: 0.6; }
 }
 @keyframes glitch-after {
     0%, 92%, 100%  { transform: none; opacity: 0; }
-    94%            { transform: translateX(4px);  opacity: 0.8; }
-    96%            { transform: translateX(-4px); opacity: 0.8; }
-    98%            { transform: translateX(2px);  opacity: 0.6; }
+    94%             { transform: translateX(4px);  opacity: 0.8; }
+    96%             { transform: translateX(-4px); opacity: 0.8; }
+    98%             { transform: translateX(2px);  opacity: 0.6; }
 }
 
 /* ─── TYPEWRITER ────────────────────────── */
@@ -505,7 +496,7 @@ header {
 .pulse-dot { animation: dotPulse 2.5s ease-in-out infinite; }
 @keyframes dotPulse {
     0%, 100% { box-shadow: 0 0 6px var(--green); }
-    50%       { box-shadow: 0 0 18px var(--green), 0 0 30px rgba(0,255,65,0.2); }
+    50%        { box-shadow: 0 0 18px var(--green), 0 0 30px rgba(0,255,65,0.2); }
 }
 .timeline-content {
     border: 1px solid var(--border); border-radius: 5px;
@@ -577,10 +568,6 @@ footer {
 .reveal.active {
     opacity: 1;
     transform: translateY(0);
-}
-/* Fallback: if JS fails or observer not supported, show everything */
-@media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; }
 }
 
 /* ─── RESPONSIVE ────────────────────────── */
