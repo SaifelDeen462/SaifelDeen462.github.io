@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
   <span class="highlight">matrix</span>     — toggle matrix rain`,
 
         whoami: `<span class="highlight">Seif El-Deen</span> — Penetration Tester<br>
-B.Sc. Computer Science & Statistics · Helwan University<br>
+B.Sc. Computer Science & Statistics · Helwan University (Graduate)<br>
 Living in the terminal. Arch Linux. Coffee-fueled.`,
 
         stats: `Machines Pwned: <span class="highlight">15+</span><br>
